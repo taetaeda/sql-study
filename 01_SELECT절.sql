@@ -3,15 +3,15 @@
 
 /*
 여러 줄 주석입니다.
-호호호~~
+호호호~
 */
 
--- SELECT [컬럼명(여러 개 가능)] FROM [테이블 이름] 
-SELECT 
-    * 
-FROM 
+-- SELECT [컬럼명(여러 개 가능)] FROM [테이블 이름]
+SELECT
+    *
+FROM
     employees;
-
+    
 SELECT employee_id, first_name, last_name
 FROM employees;
 
@@ -39,12 +39,12 @@ SELECT
 FROM employees;
     
 /*
- 오라클은 홑따옴표로 문자를 표현하고, 문자열 안에 홑따옴표를
+ 오라클은 홑따옴표로 문자를 표현하고, 문자열 안에 홑따옴표를 
  표현하고 싶다면 ''를 두 번 연속으로 쓰시면 됩니다.
  문장을 연결하고 싶다면 || 를 사용합니다.
 */
 SELECT
-    first_name || ' ' || last_name || '''salary is $' || salary 
+    first_name || ' ' || last_name || '''s salary is $' || salary
     AS 급여내역
 FROM employees;
 
@@ -57,3 +57,19 @@ SELECT DISTINCT department_id FROM employees;
 -- (로우아이디: 데이터베이스 내의 행의 주소를 반환)
 SELECT ROWNUM, ROWID, employee_id
 FROM employees;
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
