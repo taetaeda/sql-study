@@ -6,10 +6,9 @@ view는 제한적인 자료만 보기 위해 사용하는 가상 테이블의 개념입니다.
 뷰는 가상테이블로 실제 데이터가 물리적으로 저장된 형태는 아닙니다.
 뷰를 통해서 데이터에 접근하면 원본 데이터는 안전하게 보호될 수 있습니다.
 */
+SELECT * FROM user_sys_privs; -- 권한 확인
 
-SELECT * FROM user_sys_privs; --권한 확인
-
--- 단순 뷰 : 하나의 테이블을 이용하여 생성한 뷰
+-- 단순 뷰: 하나의 테이블을 이용하여 생성한 뷰
 -- 뷰의 컬럼 이름은 함수 호출문, 연산식 등 같은 가상 표현식이면 안됩니다.
 SELECT
     employee_id,
@@ -19,13 +18,12 @@ SELECT
 FROM employees
 WHERE department_id = 60;
 
-
-CREATE VIEW view_emp AS(
+CREATE VIEW view_emp AS (
     SELECT
-        employee_id,
-        first_name || ' ' || last_name AS full_name,
-        job_id,
-        salary
+    employee_id,
+    first_name || ' ' || last_name AS full_name,
+    job_id,
+    salary
     FROM employees
     WHERE department_id = 60
 );
@@ -44,23 +42,22 @@ CREATE VIEW view_emp_dept_jobs AS (
     FROM employees e
     LEFT JOIN departments d
     ON e.department_id = d.department_id
-    LEFT JOIN jobs
+    LEFT JOIN jobs j
     ON e.job_id = j.job_id
 )
 ORDER BY employee_id ASC;
 
 SELECT * FROM view_emp_dept_jobs;
 
--- 뷰의 수정(CREATE OR REPLACE VIEW 구문)
+-- 뷰의 수정 (CREATE OR REPLACE VIEW 구문)
 -- 동일 이름으로 해당 구문을 사용하면 데이터가 변경되면서 새롭게 생성됩니다.
-
 CREATE OR REPLACE VIEW view_emp_dept_jobs AS (
     SELECT
         e.employee_id,
         first_name || ' ' || last_name AS full_name,
         d.department_name,
         j.job_title,
-        e.salary -- 추가된 부분
+        e.salary -- 추가
     FROM employees e
     LEFT JOIN departments d
     ON e.department_id = d.department_id
@@ -71,13 +68,12 @@ ORDER BY employee_id ASC;
 
 SELECT * FROM view_emp_dept_jobs;
 
-
 SELECT
     job_title,
     AVG(salary) AS avg
 FROM view_emp_dept_jobs
 GROUP BY job_title
-ORDER BY AVG(salary) DESC; --SQL 구문이 확실히 짧아짐.
+ORDER BY AVG(salary) DESC; -- SQL 구문이 확실히 짧아짐.
 
 -- 뷰 삭제
 DROP VIEW view_emp;
@@ -98,6 +94,7 @@ INSERT INTO view_emp_dept_jobs
 (employee_id, department_name, job_title, salary)
 VALUES(300, 'test', 'test', 10000);
 
+-- 원본 테이블의 null을 허용하지 않는 컬럼 때문에 들어갈 수 없습니다.
 INSERT INTO view_emp
 (employee_id, job_id, salary)
 VALUES(300, 'test', 10000); -- 안됨.
@@ -112,15 +109,16 @@ ROLLBACK;
 
 -- WITH CHECK OPTION -> 조건 제약 컬럼
 -- 뷰를 생성할 때 사용한 조건 컬럼은 뷰를 통해서 변경할 수 없게 해주는 키워드
-CREATE VIEW view_emp_test AS (
+
+CREATE OR REPLACE VIEW view_emp_test AS (
     SELECT
-        employee_id,
-        first_name,
-        last_name,
-        email,
-        hire_date,
-        job_id,
-        department_id
+    employee_id,
+    first_name,
+    last_name,
+    email,
+    hire_date,
+    job_id,
+    department_id
     FROM employees
     WHERE department_id = 60
 )
@@ -132,53 +130,30 @@ WHERE employee_id = 107;
 
 SELECT * FROM view_emp_test;
 
-DROP TABLE view_emp_test;
-
--- 읽기 전용 뷰 -- WITH READ ONLY (DML 연산을 막음 -> SELECT만 허용)
+-- 읽기 전용 뷰 -> WITH READ ONLY (DML 연산을 막음 -> SELECT만 허용)
 CREATE OR REPLACE VIEW view_emp_test AS (
     SELECT
-        employee_id,
-        first_name,
-        last_name,
-        email,
-        hire_date,
-        job_id,
-        department_id
+    employee_id,
+    first_name,
+    last_name,
+    email,
+    hire_date,
+    job_id,
+    department_id
     FROM employees
     WHERE department_id = 60
 )
 WITH READ ONLY;
 
-/*
-문제 12. 
-employees테이블, departments테이블을 left조인 hire_date를 오름차순 기준으로 
-1-10번째 데이터만 출력합니다.
-조건) rownum을 적용하여 번호, 직원아이디, 이름, 전화번호, 입사일, 
-부서아이디, 부서이름 을 출력합니다.
-조건) hire_date를 기준으로 오름차순 정렬 되어야 합니다. rownum이 틀어지면 안됩니다.
-*/
 
-/*
-문제 13. 
---EMPLOYEES 와 DEPARTMENTS 테이블에서 JOB_ID가 SA_MAN 사원의 정보의 LAST_NAME, JOB_ID, 
-DEPARTMENT_ID,DEPARTMENT_NAME을 출력하세요.
-*/
 
-/*
-문제 14
---DEPARTMENT테이블에서 각 부서의 ID, NAME, MANAGER_ID와 부서에 속한 인원수를 출력하세요.
---인원수 기준 내림차순 정렬하세요.
---사람이 없는 부서는 출력하지 뽑지 않습니다.
-*/
 
-/*
-문제 15
---부서에 대한 정보 전부와, 주소, 우편번호, 부서별 평균 연봉을 구해서 출력하세요.
---부서별 평균이 없으면 0으로 출력하세요.
-*/
 
-/*
-문제 16
--문제 15 결과에 대해 DEPARTMENT_ID기준으로 내림차순 정렬해서 
-ROWNUM을 붙여 1-10 데이터 까지만 출력하세요.
-*/
+
+
+
+
+
+
+
+

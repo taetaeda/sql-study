@@ -10,7 +10,7 @@
 - 시, 분, 초 지원 가능.
 */
 
--- CREATE로 만든건 ROLLBACK 영향 안 받아요
+
 CREATE TABLE dept2 (
     dept_no NUMBER(2),
     dept_name VARCHAR2(14),
@@ -22,15 +22,9 @@ CREATE TABLE dept2 (
 DESC dept2;
 SELECT * FROM dept2;
 
-INSERT INTO dept2
-VALUES(10, '개발', '서울', sysdate, 1000000);
-INSERT INTO dept2
-VALUES(20, '영업', '서울', sysdate, 2000000);
-
---NUMBER와 VARCAHR2 타입의 길이를 확인.
+-- NUMBER와 VARCHAR2 타입의 길이를 확인.
 INSERT INTO dept2
 VALUES(30, '경영지원', '경기', sysdate, 2000000);
--- 300, '아직생각해놓은이름은없는부서' 등으로 값을 크게 하면 에러 발생, VALUE가 너무 크다
 
 -- 컬럼 추가
 ALTER TABLE dept2
@@ -44,29 +38,17 @@ RENAME COLUMN dept_count TO emp_count;
 -- 만약 변경하고자 하는 컬럼에 데이터가 이미 존재한다면 그에 맞는 타입으로
 -- 변경해 주셔야 합니다. 맞지 않는 타입으로는 변경이 불가능합니다.
 ALTER TABLE dept2
-MODIFY (dept_name VARCHAR2(100));
-
-ALTER TABLE dept2
-MODIFY (dept_name NUMBER(20));
--- 에러
-ALTER TABLE dept2
 MODIFY (dept_name VARCHAR2(2));
--- 이미 들어있는 값이 훨씬 큰데~
 
 -- 열 삭제
 ALTER TABLE dept2
 DROP COLUMN dept_bonus;
 
-SELECT * FROM dept2;
+SELECT * FROM dept3;
 
 -- 테이블 이름 변경
 ALTER TABLE dept2
 RENAME TO dept3;
-
--- 테이블 이름 바꾸면서 이거는 실행안됨
-SELECT * FROM dept2;
-
-SELECT * FROM dept3;
 
 -- 테이블 삭제 (구조는 남겨두고 내부 데이터만 모두 삭제)
 TRUNCATE TABLE dept3;
@@ -74,3 +56,13 @@ TRUNCATE TABLE dept3;
 DROP TABLE dept3;
 
 ROLLBACK;
+
+
+
+
+
+
+
+
+
+
